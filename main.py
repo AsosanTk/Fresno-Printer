@@ -108,7 +108,7 @@ textfont = ImageFont.truetype('ZenKakuGothicNew-Regular.ttf', 18, encoding='unic
 
 
 while True:
-    sleep(1)
+    sleep(15)
 
 
 

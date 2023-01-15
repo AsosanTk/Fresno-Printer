@@ -36,7 +36,7 @@ def createReceipt(doc):
     # head part: タイトル周辺
     head = Image.new('1', (width, 210), 255)
     drawhead = ImageDraw.Draw(head)
-    drawhead.text((0,40), "Navy Bottle Coffee Kyoto", font=titlefont , fill=0)
+    drawhead.text((0,25), "Navy Bottle Coffee Kyoto", font=titlefont , fill=0)
     drawhead.text((0,80), "東京都世田谷区池尻4-7-1", anchor="ls", font=textfont , fill=0)
     drawhead.text((0,96), "筑駒高3喫茶班",  anchor="ls", font=textfont , fill=0)
     drawhead.text((width,80), date, anchor="ls", font=numberfont , fill=0)
@@ -76,6 +76,7 @@ def createReceipt(doc):
     p.image(body)
     p.image(foot)
     p.cut()
+    p.reset()
     #head.save("head.jpg")
     #body.save("body.jpg")
     #foot.save("foot.jpg")
@@ -100,10 +101,10 @@ watcher = ref.on_snapshot(onUpdate)
 
 # Print Settings
 width = 384
-titlefont = ImageFont.truetype('ZenKakuGothicNew-Medium.ttf', 26, encoding='unic')
-largefont = ImageFont.truetype('ZenKakuGothicNew-Medium.ttf', 16, encoding='unic') # 合計金額
-numberfont = ImageFont.truetype('ZenKakuGothicNew-Medium.ttf', 13, encoding='unic')
-textfont = ImageFont.truetype('ZenKakuGothicNew-Regular.ttf', 12, encoding='unic')
+titlefont = ImageFont.truetype('ZenKakuGothicNew-Medium.ttf', 34, encoding='unic')
+largefont = ImageFont.truetype('ZenKakuGothicNew-Medium.ttf', 30, encoding='unic') # 合計金額
+numberfont = ImageFont.truetype('ZenKakuGothicNew-Medium.ttf', 20, encoding='unic')
+textfont = ImageFont.truetype('ZenKakuGothicNew-Regular.ttf', 18, encoding='unic')
 
 
 while True:

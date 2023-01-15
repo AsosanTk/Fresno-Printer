@@ -76,7 +76,7 @@ def createReceipt(doc):
     p.image(body)
     p.image(foot)
     p.cut()
-    p.reset()
+    p.close()
     #head.save("head.jpg")
     #body.save("body.jpg")
     #foot.save("foot.jpg")

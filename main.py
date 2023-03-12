@@ -9,7 +9,6 @@ import cv2
 
 #RGB Matrix
 import numpy as np
-# import cv2
 from rgbmatrix import RGBMatrix, RGBMatrixOptions
 
 from time import sleep
@@ -56,7 +55,21 @@ matrix = RGBMatrix(options = options)
 
 
 
+filepath = "check.mov"
 
+# 動画の読み込み
+cap = cv2.VideoCapture(filepath)
+
+
+
+def playCheckVideo():
+    while(cap.isOpened()):
+        ret, frame = cap.read()
+        cv2.imshow("Frame", frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    cap.release()
+    cv2.destroyAllWindows()
 
 
 # createReceipt
@@ -118,6 +131,8 @@ def createReceipt(doc):
     #body.save("body.jpg")
     #foot.save("foot.jpg")
     db.collection("ReceiptData").document(num).delete()
+    playCheckVideo()
+
 
 
 # Normal
@@ -150,6 +165,15 @@ def cv2pil(image):
     return new_image
 
 
+
+
+
 while True:
     matrix.SetImage(normalimage.convert('RGB'))
     sleep(1500)
+
+
+
+
+
+    

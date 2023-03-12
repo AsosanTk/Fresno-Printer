@@ -7,7 +7,7 @@ from escpos import *
 
 #RGB Matrix
 import numpy as np
-import cv2
+# import cv2
 from rgbmatrix import RGBMatrix, RGBMatrixOptions
 
 from time import sleep
@@ -50,6 +50,7 @@ options.show_refresh_rate = 60
 matrix = RGBMatrix(options = options)
 
 
+p = Usb(0x0416, 0x5011, 0, 0x81, 0x03)
 
 
 
@@ -57,7 +58,7 @@ matrix = RGBMatrix(options = options)
 
 # createReceipt
 def createReceipt(doc):
-    data = doc.to_dict()
+    data = doc.get().to_dict()
     date = data['date']
     time = data['time']
     num = data['num']
@@ -104,7 +105,7 @@ def createReceipt(doc):
     foothead.text((0,64), "お釣り", anchor="lm", font=textfont, fill=0)
     foothead.text((width,64), "¥"+str(paid-sum), anchor="rm", font=largefont, fill=0)
     # Print
-    p = Usb(0x0416, 0x5011, 0)
+    #
     p.image(head)
     p.image(body)
     p.image(foot)

@@ -5,6 +5,7 @@ sys.path.append('/home/aso2023/.local/lib/python3.9/site-packages')
 from escpos.printer import Usb
 from escpos import *
 import lib
+import cv2
 
 #RGB Matrix
 import numpy as np
@@ -25,6 +26,8 @@ firebase_admin.initialize_app(cred)
 #default_app = firebase_admin.initialize_app()
 db = firestore.client()
 ref = db.collection('ReceiptData')
+
+
 
 # Print Settings
 width = 384

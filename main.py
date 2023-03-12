@@ -4,6 +4,7 @@ sys.path.append('/home/aso2023/.local/lib/python3.9/site-packages')
 # escpos
 from escpos.printer import Usb
 from escpos import *
+import lib
 
 #RGB Matrix
 import numpy as np
@@ -50,7 +51,6 @@ options.show_refresh_rate = 60
 matrix = RGBMatrix(options = options)
 
 
-p = Usb(0x0416, 0x5011, 0, 0x81, 0x03)
 
 
 
@@ -58,7 +58,7 @@ p = Usb(0x0416, 0x5011, 0, 0x81, 0x03)
 
 # createReceipt
 def createReceipt(doc):
-    data = doc.get().to_dict()
+    data = doc.to_dict()
     date = data['date']
     time = data['time']
     num = data['num']
@@ -66,7 +66,7 @@ def createReceipt(doc):
     type = data['type']
     sum = data['sum']
     paid = data['paid']
-    orderlist = data['orders']
+    orderlist = list(data['orders'])
     # head part: タイトル周辺
     head = Image.new('1', (width, 210), 255)
     drawhead = ImageDraw.Draw(head)
@@ -106,6 +106,7 @@ def createReceipt(doc):
     foothead.text((width,64), "¥"+str(paid-sum), anchor="rm", font=largefont, fill=0)
     # Print
     #
+    p = Usb(0x0416, 0x5011, 0)
     p.image(head)
     p.image(body)
     p.image(foot)
@@ -116,6 +117,10 @@ def createReceipt(doc):
     db.collection("ReceiptData").document(num).delete()
 
 
+# Normal
+frame = Image.open("kissalogo.png")
+frame2 = cv2.resize(frame, (32,16)) 
+normalimage = cv2pil(frame2)
 
 
 # onUpdate
@@ -130,10 +135,18 @@ def onUpdate(docs, changes, read_time):
 watcher = ref.on_snapshot(onUpdate)
 
 
-
+def cv2pil(image):
+    new_image = image.copy()
+    if new_image.ndim == 2:  # モノクロ
+        pass
+    elif new_image.shape[2] == 3:  # カラー
+        new_image = new_image[:, :, ::-1]
+    elif new_image.shape[2] == 4:  # 透過
+        new_image = new_image[:, :, [2, 1, 0, 3]]
+    new_image = Image.fromarray(new_image)
+    return new_image
 
 
 while True:
-    normalimage = Image.open("kissalogo.png")
     matrix.SetImage(normalimage.convert('RGB'))
-    sleep(15)
+    sleep(1500)

@@ -5,6 +5,11 @@ sys.path.append('/home/aso2023/.local/lib/python3.9/site-packages')
 from escpos.printer import Usb
 from escpos import *
 
+#RGB Matrix
+import numpy as np
+import cv2
+from rgbmatrix import RGBMatrix, RGBMatrixOptions
+
 from time import sleep
 # Pillow
 from PIL import Image
@@ -19,6 +24,34 @@ firebase_admin.initialize_app(cred)
 #default_app = firebase_admin.initialize_app()
 db = firestore.client()
 ref = db.collection('ReceiptData')
+
+# Print Settings
+width = 384
+titlefont = ImageFont.truetype('ZenKakuGothicNew-Medium.ttf', 34, encoding='unic')
+largefont = ImageFont.truetype('ZenKakuGothicNew-Medium.ttf', 30, encoding='unic') # 合計金額
+numberfont = ImageFont.truetype('ZenKakuGothicNew-Medium.ttf', 20, encoding='unic')
+textfont = ImageFont.truetype('ZenKakuGothicNew-Regular.ttf', 18, encoding='unic')
+
+
+## LED Matrix
+options = RGBMatrixOptions()
+options.rows = 16
+options.cols = 32
+options.chain_length = 1
+options.parallel = 1
+options.hardware_mapping = 'regular'
+options.disable_hardware_pulsing = 1
+options.gpio_slowdown = 5
+options.brightness = 70
+options.limit_refresh_rate_hz = 120
+options.show_refresh_rate = 60
+# options.pwm_lsb_nanoseconds = 350
+
+matrix = RGBMatrix(options = options)
+
+
+
+
 
 
 
@@ -49,7 +82,7 @@ def createReceipt(doc):
     drawhead.text((86,160), num, font=textfont , fill=0)
     drawhead.line(((0, 176), (width, 176)), fill=0, width=1)
     drawhead.text((width/2,190), type, anchor="lm", font=textfont, fill=0)
-    drawhead.line(((0, 200), (width, 200)), fill=0, width=4)
+    drawhead.line(((0, 200), (width, 200)), fill=0, width=1)
     # body part: 項目の部分
     height = 50 * len(orderlist)
     body = Image.new('1', (width, height), 255)
@@ -75,8 +108,7 @@ def createReceipt(doc):
     p.image(head)
     p.image(body)
     p.image(foot)
-    p.cut()
-    p.close()
+    p.cut() 
     #head.save("head.jpg")
     #body.save("body.jpg")
     #foot.save("foot.jpg")
@@ -90,7 +122,6 @@ def onUpdate(docs, changes, read_time):
     docs = ref.get()
     for doc in docs:
         createReceipt(doc)
-        
 
 
 
@@ -99,26 +130,9 @@ watcher = ref.on_snapshot(onUpdate)
 
 
 
-# Print Settings
-width = 384
-titlefont = ImageFont.truetype('ZenKakuGothicNew-Medium.ttf', 34, encoding='unic')
-largefont = ImageFont.truetype('ZenKakuGothicNew-Medium.ttf', 30, encoding='unic') # 合計金額
-numberfont = ImageFont.truetype('ZenKakuGothicNew-Medium.ttf', 20, encoding='unic')
-textfont = ImageFont.truetype('ZenKakuGothicNew-Regular.ttf', 18, encoding='unic')
 
 
 while True:
+    normalimage = Image.open("kissalogo.png")
+    matrix.SetImage(normalimage.convert('RGB'))
     sleep(15)
-
-
-
-
-
-
-
-
-
-
-
-
-
